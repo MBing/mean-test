@@ -33,6 +33,9 @@ app.use(function (req, res, next) {
 app.use('/', appRoutes);
 
 // catch 404 and forward to error handler
+// This method is here to redirect to the client and let the client handle 404 pages,
+// so no 404 would be thrown from the server side and you can keep the server side very simple in this case
+// Angular 2/4 can take over and shows whatever is available.
 app.use(function (req, res, next) {
     return res.render('index');
 });
