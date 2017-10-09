@@ -32,7 +32,17 @@ export class MessageService {
     }
 
     getMessages() {
-        return this.messages;
+        return this.http.get('http://localhost:3000/message')
+            .map((response: Response) => {
+                const messages = response.json().obj;
+                let transformedMessages: Message[] = messages;
+                for (let message of messages) {
+                    transformedMessages.push(new Message(message.content, 'Dummy', message.id, null));
+                }
+                this.messages = transformedMessages;
+                return transformedMessages;
+            })
+            .catch((err: Response) => Observable.throw(err.json()));
     }
 
     deleteMessage(message: Message) {

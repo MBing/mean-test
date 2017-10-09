@@ -20,6 +20,10 @@ export class MessageListComponent implements OnInit {
 
     // called after component has been initialized and its properties have been initialized
     ngOnInit() {
-        this.messages = this.messageService.getMessages();
+        this.messageService.getMessages()
+            .subscribe(
+                (message: Message[]) => {
+                    this.messages = message;
+                });
     }
 }
