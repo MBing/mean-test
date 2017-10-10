@@ -35,7 +35,7 @@ export class MessageService {
         return this.http.get('http://localhost:3000/message')
             .map((response: Response) => {
                 const messages = response.json().obj;
-                let transformedMessages: Message[] = messages;
+                let transformedMessages: Message[] = [];
                 for (let message of messages) {
                     transformedMessages.push(new Message(message.content, 'Dummy', message.id, null));
                 }
