@@ -2,14 +2,16 @@
     <form (ngSubmit)="onSubmit(f)" #f="ngForm">
         <div class="form-group">
             <label for="content">Content</label>
+            <!-- ngModel 'message?' checks if message is undefined and then continues to check and show the value -->
             <input
                     type="text"
                     id="content"
                     class="form-control"
-                    ngModel
+                    [ngModel]="message?.content"
                     name="content"
                     required>
         </div>
+        <button class="btn btn-danger" type="button" (click)="onClear(f)">Clear</button>
         <button class="btn btn-primary" type="submit">Save</button>
     </form>
 </div>

@@ -1,5 +1,5 @@
 import { Headers, Http, Response } from "@angular/http";
-import { Injectable } from "@angular/core";
+import { EventEmitter, Injectable } from "@angular/core";
 import 'rxjs/Rx';
 import { Observable } from "rxjs/Observable";
 
@@ -10,18 +10,24 @@ import { Message } from "./message.model";
 @Injectable()
 export class MessageService {
     private messages: Message[] = [];
+    messageIsEdit = new EventEmitter<Message>();
 
     constructor(private http: Http) {}
 
     addMessage(message: Message) {
-        this.messages.push(message);
+        // this.messages.push(message);
         const body = JSON.stringify(message);
         const headers = new Headers({'Content-Type':'application/json'});
         // only sets up an observable, not doing a request,
         // but allows us to subscribe to it and holds the request
         // no one has yet subscribed to it, so why would you send a request?
         return this.http.post('http://localhost:3000/message', body, {headers: headers})
-                        .map((resp: Response) => resp.json())
+                        .map((resp: Response) => {
+                            const result = resp.json();
+                            const message =  new Message(result.obj.content, 'Dummy', result.obj._id, null);
+                            this.messages.push(message);
+                            return message;
+                        })
                         .catch((err: Response) => Observable.throw(err.json()));
         /* the response.json() will give the json from message.js back that looks like:
             {
@@ -37,11 +43,27 @@ export class MessageService {
                 const messages = response.json().obj;
                 let transformedMessages: Message[] = [];
                 for (let message of messages) {
-                    transformedMessages.push(new Message(message.content, 'Dummy', message.id, null));
+                    transformedMessages.push(new Message(message.content, 'Dummy', message._id, null));
                 }
                 this.messages = transformedMessages;
                 return transformedMessages;
             })
+            .catch((err: Response) => Observable.throw(err.json()));
+    }
+
+    editMessage(message: Message) {
+        this.messageIsEdit.emit(message)
+    }
+
+    updateMessage(message: Message) {
+        this.messages.push(message);
+        const body = JSON.stringify(message);
+        const headers = new Headers({'Content-Type':'application/json'});
+        // only sets up an observable, not doing a request,
+        // but allows us to subscribe to it and holds the request
+        // no one has yet subscribed to it, so why would you send a request?
+        return this.http.patch('http://localhost:3000/message/' + message.messageId, body, {headers: headers})
+            .map((resp: Response) => resp.json())
             .catch((err: Response) => Observable.throw(err.json()));
     }
 
