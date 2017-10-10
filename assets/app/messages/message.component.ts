@@ -29,7 +29,10 @@ export class MessageComponent {
         this.messageService.editMessage(this.message);
     }
 
-    onDelete(message) {
-        this.messageService.deleteMessage(message)
+    onDelete() {
+        this.messageService.deleteMessage(this.message)
+            .subscribe(
+                result => console.log(result)
+            )
     }
 }

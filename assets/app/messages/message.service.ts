@@ -56,7 +56,7 @@ export class MessageService {
     }
 
     updateMessage(message: Message) {
-        this.messages.push(message);
+        // this.messages.push(message);
         const body = JSON.stringify(message);
         const headers = new Headers({'Content-Type':'application/json'});
         // only sets up an observable, not doing a request,
@@ -68,6 +68,15 @@ export class MessageService {
     }
 
     deleteMessage(message: Message) {
+        // optimistic delete from front end
         this.messages.splice(this.messages.indexOf(message), 1);
+        const body = JSON.stringify(message);
+        const headers = new Headers({'Content-Type':'application/json'});
+        // only sets up an observable, not doing a request,
+        // but allows us to subscribe to it and holds the request
+        // no one has yet subscribed to it, so why would you send a request?
+        return this.http.delete('http://localhost:3000/message/' + message.messageId)
+            .map((resp: Response) => resp.json())
+            .catch((err: Response) => Observable.throw(err.json()));
     }
 }
