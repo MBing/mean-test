@@ -4,6 +4,7 @@ import 'rxjs/Rx';
 import { Observable } from "rxjs/Observable";
 
 import { Message } from "./message.model";
+import { ErrorService } from "../errors/error.service";
 
 // to use the Http module, you need your class to have metadata, this is not a Component,
 // so you use 'Injectable' to provide you with metadata to be able to work with it.
@@ -12,7 +13,7 @@ export class MessageService {
     private messages: Message[] = [];
     messageIsEdit = new EventEmitter<Message>();
 
-    constructor(private http: Http) {}
+    constructor(private http: Http, private errorService: ErrorService) {}
 
     addMessage(message: Message) {
         // this.messages.push(message);
@@ -35,7 +36,10 @@ export class MessageService {
                             this.messages.push(message);
                             return message;
                         })
-                        .catch((err: Response) => Observable.throw(err.json()));
+                        .catch((error: Response) => {
+                            this.errorService.handleError(error.json());
+                            return Observable.throw(error.json())
+                        });
         /* the response.json() will give the json from message.js back that looks like:
             {
                 message: 'Saved Message',
@@ -59,7 +63,10 @@ export class MessageService {
                 this.messages = transformedMessages;
                 return transformedMessages;
             })
-            .catch((err: Response) => Observable.throw(err.json()));
+            .catch((error: Response) => {
+                this.errorService.handleError(error.json());
+                return Observable.throw(error.json())
+            });
     }
 
     editMessage(message: Message) {
@@ -78,7 +85,10 @@ export class MessageService {
         // no one has yet subscribed to it, so why would you send a request?
         return this.http.patch('http://localhost:3000/message/' + message.messageId + token, body, {headers: headers})
             .map((resp: Response) => resp.json())
-            .catch((err: Response) => Observable.throw(err.json()));
+            .catch((error: Response) => {
+                this.errorService.handleError(error.json());
+                return Observable.throw(error.json())
+            });
     }
 
     deleteMessage(message: Message) {
@@ -95,6 +105,9 @@ export class MessageService {
         // no one has yet subscribed to it, so why would you send a request?
         return this.http.delete('http://localhost:3000/message/' + message.messageId + token)
             .map((resp: Response) => resp.json())
-            .catch((err: Response) => Observable.throw(err.json()));
+            .catch((error: Response) => {
+                this.errorService.handleError(error.json());
+                return Observable.throw(error.json())
+            });
     }
 }
