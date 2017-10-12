@@ -18,10 +18,13 @@ export class MessageService {
         // this.messages.push(message);
         const body = JSON.stringify(message);
         const headers = new Headers({'Content-Type':'application/json'});
+        const token = localStorage.getItem('token')
+            ? '?token=' + localStorage.getItem('token')
+            : '';
         // only sets up an observable, not doing a request,
         // but allows us to subscribe to it and holds the request
         // no one has yet subscribed to it, so why would you send a request?
-        return this.http.post('http://localhost:3000/message', body, {headers: headers})
+        return this.http.post('http://localhost:3000/message' + token, body, {headers: headers})
                         .map((resp: Response) => {
                             const result = resp.json();
                             const message =  new Message(result.obj.content, 'Dummy', result.obj._id, null);
@@ -59,10 +62,13 @@ export class MessageService {
         // this.messages.push(message);
         const body = JSON.stringify(message);
         const headers = new Headers({'Content-Type':'application/json'});
+        const token = localStorage.getItem('token')
+            ? '?token=' + localStorage.getItem('token')
+            : '';
         // only sets up an observable, not doing a request,
         // but allows us to subscribe to it and holds the request
         // no one has yet subscribed to it, so why would you send a request?
-        return this.http.patch('http://localhost:3000/message/' + message.messageId, body, {headers: headers})
+        return this.http.patch('http://localhost:3000/message/' + message.messageId + token, body, {headers: headers})
             .map((resp: Response) => resp.json())
             .catch((err: Response) => Observable.throw(err.json()));
     }
@@ -72,10 +78,14 @@ export class MessageService {
         this.messages.splice(this.messages.indexOf(message), 1);
         const body = JSON.stringify(message);
         const headers = new Headers({'Content-Type':'application/json'});
+        const token = localStorage.getItem('token')
+            ? '?token=' + localStorage.getItem('token')
+            : '';
+
         // only sets up an observable, not doing a request,
         // but allows us to subscribe to it and holds the request
         // no one has yet subscribed to it, so why would you send a request?
-        return this.http.delete('http://localhost:3000/message/' + message.messageId)
+        return this.http.delete('http://localhost:3000/message/' + message.messageId + token)
             .map((resp: Response) => resp.json())
             .catch((err: Response) => Observable.throw(err.json()));
     }
