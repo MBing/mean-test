@@ -25,6 +25,7 @@ export class MessageService {
         // only sets up an observable, not doing a request,
         // but allows us to subscribe to it and holds the request
         // no one has yet subscribed to it, so why would you send a request?
+        // TODO: Change localhost when deploying to live domain
         return this.http.post('http://localhost:3000/message' + token, body, {headers: headers})
                         .map((resp: Response) => {
                             const result = resp.json();
@@ -48,6 +49,7 @@ export class MessageService {
         */
     }
 
+    // TODO: Change localhost when deploying to live domain
     getMessages() {
         return this.http.get('http://localhost:3000/message')
             .map((response: Response) => {
@@ -83,6 +85,7 @@ export class MessageService {
         // only sets up an observable, not doing a request,
         // but allows us to subscribe to it and holds the request
         // no one has yet subscribed to it, so why would you send a request?
+        // TODO: Change localhost when deploying to live domain
         return this.http.patch('http://localhost:3000/message/' + message.messageId + token, body, {headers: headers})
             .map((resp: Response) => resp.json())
             .catch((error: Response) => {
@@ -103,6 +106,7 @@ export class MessageService {
         // only sets up an observable, not doing a request,
         // but allows us to subscribe to it and holds the request
         // no one has yet subscribed to it, so why would you send a request?
+        // TODO: Change localhost when deploying to live domain
         return this.http.delete('http://localhost:3000/message/' + message.messageId + token)
             .map((resp: Response) => resp.json())
             .catch((error: Response) => {
